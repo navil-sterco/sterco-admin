@@ -1,0 +1,61 @@
+[
+    {
+        "header": "",
+        "items": [
+            {
+                "text": "Dashboard",
+                "icon": "bx bx-home",
+                "available": true,
+                "link": "/"
+            },
+            {
+                "text": "Portfolio",
+                "icon": "bx bx-briefcase",
+                "available": true,
+                "link": "/portfolio"
+            },
+            {
+                "text": "Categories",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/categories"
+            },
+            {
+                "text": "Sub Categories",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/sub-categories"
+            },
+            {
+                "text": "Clients",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/clients"
+            },
+            {
+                "text": "Testimonials",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/testimonials"
+            },
+            {
+                "text": "News",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/news"
+            },
+            {
+                "text": "Blogs",
+                "icon": "bx bx-book-content",
+                "available": true,
+                "link": "/blogs"
+            },
+            {
+                "text": "Case Studies",
+                "icon": "bx bx-category",
+                "available": true,
+                "link": "/case-studies"
+            }
+        ]
+    }
+]
