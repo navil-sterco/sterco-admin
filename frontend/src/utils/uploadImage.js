@@ -20,5 +20,12 @@ export const uploadImage = async (file) => {
     throw new Error(result.message || 'Image upload failed');
   }
 
-  return result.imageUrl;
+  try {
+    const url = new URL(result.imageUrl);
+    return url.pathname;
+  } catch {
+    // Already a relative path, or malformed URL — return as-is
+    return result.imageUrl;
+  }
+
 };

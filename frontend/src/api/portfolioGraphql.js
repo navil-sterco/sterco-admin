@@ -268,6 +268,8 @@ export const GET_PORTFOLIOS = `
     portfolios {
       _id
       imageUrl
+      isFeatured
+      order
       createdAt
       category {
         _id
@@ -315,6 +317,8 @@ export const UPDATE_PORTFOLIO = `
     updatePortfolio(id: $id, input: $input) {
       _id
       imageUrl
+      isFeatured
+      order
       category {
         _id
         name
