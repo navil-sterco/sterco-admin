@@ -1,13 +1,50 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-const APP_BASE_URL = import.meta.env.VITE_APP_URL || API_BASE_URL.replace(/\/api\/?$/, '');
-export const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+const normalizeBase = (value, fallback) => {
+  const normalized = (value || fallback || '').trim();
+  return normalized.replace(/\/+$/, '');
+};
 
-export const apiBaseUrl = API_BASE_URL;
+const normalizePath = (value = '') => {
+  return String(value).replace(/^\/+/, '');
+};
 
-export const assetUrl = (assetPath) =>
-  /^(?:[a-z][a-z\d+.-]*:)?\/\//i.test(assetPath)
-    ? BASE_URL + assetPath
-    : `${BASE_URL.replace(/\/$/, '')}/${assetPath.replace(/^\//, '')}`;
+export const frontendBaseUrl = normalizeBase(
+  import.meta.env.VITE_APP_URL,
+  'http://localhost:5173'
+);
 
-export const urlFromBase = (path) =>
-  `${API_BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+export const backendBaseUrl = normalizeBase(
+  import.meta.env.BACKEND_URL,
+  'http://localhost:8000'
+);
+
+export const apiBaseUrl = normalizeBase(
+  import.meta.env.VITE_API_URL,
+  `${backendBaseUrl}/api`
+);
+
+export const assetUrl = (path = '') => {
+  if (!path) return frontendBaseUrl;
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  const cleanPath = normalizePath(path);
+
+  if (cleanPath.startsWith('uploads/') || cleanPath.startsWith('api/')) {
+    return `${backendBaseUrl}/${cleanPath}`;
+  }
+
+  return `${frontendBaseUrl}/${cleanPath}`;
+};
+
+export const urlFromBase = (path = '') => {
+  const cleanPath = normalizePath(path);
+  if (!cleanPath) return apiBaseUrl;
+
+  if (/^https?:\/\//i.test(cleanPath)) {
+    return cleanPath;
+  }
+
+  return `${apiBaseUrl}/${cleanPath}`;
+};
