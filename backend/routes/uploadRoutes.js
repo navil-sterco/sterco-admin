@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, uploadDir);
   },
+
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
@@ -25,9 +26,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+
   fileFilter: (_req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/svg+xml'];
+    const allowed = [
+      'image/jpeg',
+      'image/png',
+      'image/jpg',
+      'image/webp',
+      'image/svg+xml',
+    ];
+
     if (allowed.includes(file.mimetype)) {
       cb(null, true);
       return;
@@ -37,19 +48,27 @@ const upload = multer({
   },
 });
 
-router.post('/image', protect, authorize('admin'), upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: 'No image uploaded' });
+router.post(
+  '/image',
+  protect,
+  authorize('admin'),
+  upload.single('image'),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No image uploaded',
+      });
+    }
+
+    const imageUrl = `/uploads/portfolio/${req.file.filename}`;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Image uploaded successfully',
+      imageUrl,
+    });
   }
-
-  const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-  const imageUrl = `${baseUrl.replace(/\/$/, '')}/uploads/portfolio/${req.file.filename}`;
-
-  return res.status(200).json({
-    success: true,
-    message: 'Image uploaded successfully',
-    imageUrl,
-  });
-});
+);
 
 module.exports = router;
