@@ -112,8 +112,15 @@ type Testimonial {
     category: Category
     subCategory: SubCategory
     createdBy: ID
+    isFeatured: Boolean!
+    order: Int!
     createdAt: String!
     updatedAt: String!
+  }
+
+  enum SortDirection {
+    ASC
+    DESC
   }
 
   type Query {
@@ -124,7 +131,7 @@ type Testimonial {
     categories: [Category!]!
     category(id: ID!): Category
     categoryBySlug(slug: String!): Category
-    portfolios: [Portfolio!]!
+    portfolios(isFeatured: Boolean, orderBy: SortDirection): [Portfolio!]!
     portfolio(id: ID!): Portfolio
     portfoliosByCategory(categoryId: ID!): [Portfolio!]!
     portfoliosByCategorySlug(slug: String!, subCategoryId: ID): [Portfolio!]!
@@ -161,12 +168,16 @@ type Testimonial {
     imageUrl: String
     categoryId: ID!
     subCategoryId: ID
+    isFeatured: Boolean
+    order: Int
   }
 
   input UpdatePortfolioInput {
     imageUrl: String
     categoryId: ID
     subCategoryId: ID
+    isFeatured: Boolean
+    order: Int
   }
 
   type Mutation {
@@ -323,8 +334,17 @@ const resolvers = {
     categoryBySlug: async (_, { slug }) => {
       return Category.findOne({ slug });
     },
-    portfolios: async () => {
-      return Portfolio.find({}).populate("category").sort({ createdAt: -1 });
+    portfolios: async (_, { isFeatured, orderBy }) => {
+      const query = {};
+      if (isFeatured !== undefined) {
+        query.isFeatured = isFeatured;
+      }
+
+      const sort = orderBy
+        ? { order: orderBy === 'ASC' ? 1 : -1 }
+        : { createdAt: -1 };
+        
+      return Portfolio.find(query).populate('category').sort(sort);
     },
     portfolio: async (_, { id }) => {
       return Portfolio.findById(id).populate("category");
@@ -634,6 +654,7 @@ const resolvers = {
         imageUrl: input.imageUrl || "",
         category: input.categoryId,
         subCategory: input.subCategoryId || null,
+        order: input.order ?? 0,
         createdBy: user?._id || null,
       });
 
@@ -675,6 +696,8 @@ const resolvers = {
           ...(input.subCategoryId !== undefined
             ? { subCategory: input.subCategoryId || null }
             : {}),
+          ...(input.isFeatured !== undefined ? { isFeatured: input.isFeatured } : {}),
+          ...(input.order !== undefined ? { order: input.order } : {}),
         },
         { new: true, runValidators: true },
       );
