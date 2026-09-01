@@ -55,6 +55,12 @@
                 "icon": "bx bx-category",
                 "available": true,
                 "link": "/case-studies"
+            },
+            {
+                "text": "Careers",
+                "icon": "bx bx-briefcase",
+                "available": true,
+                "link": "/careers"
             }
         ]
     }
