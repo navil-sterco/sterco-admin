@@ -30,6 +30,7 @@ const typeDefs = `
     logoImage: String!
     date: String!
     htmlContent: String!
+    slug: String!
     createdAt: String!
     updatedAt: String!
   }
@@ -60,6 +61,7 @@ const typeDefs = `
   type Query {
     caseStudies(page: Int, limit: Int): CaseStudyPage!
     caseStudy(id: ID!): CaseStudy
+    caseStudyBySlug(slug: String!): CaseStudy
   }
 
   type Mutation {
@@ -68,6 +70,9 @@ const typeDefs = `
     deleteCaseStudy(id: ID!): Boolean!
   }
 `;
+
+const slugify = (value) =>
+  value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 const requireAdmin = (context) => {
   if (!context?.user) {
@@ -113,6 +118,9 @@ const resolvers = {
     caseStudy: async (_, { id }) => {
       return CaseStudy.findById(id);
     },
+    caseStudyBySlug: async (_, { slug }) => {
+      return CaseStudy.findOne({ slug });
+    },
   },
 
   Mutation: {
@@ -125,6 +133,7 @@ const resolvers = {
         logoImage: input.logoImage,
         date: input.date,
         htmlContent: input.htmlContent,
+        slug: slugify(input.title),
       });
 
       return caseStudy;
@@ -152,6 +161,7 @@ const resolvers = {
           logoImage: nextLogo,
           date: nextDate,
           htmlContent: nextHtml,
+          slug: slugify(nextTitle),
         },
         { new: true, runValidators: true }
       );

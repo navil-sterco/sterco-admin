@@ -16,6 +16,7 @@ const { buildGraphQLContext } = require('./graphql/context');
 const { newsSchema } = require('./graphql/newsSchema');
 const { blogSchema } = require('./graphql/blogSchema');
 const {caseStudySchema} = require('./graphql/caseStudySchema');
+const { careerSchema } = require('./graphql/careerSchema');
 
 connectDB();
 
@@ -117,6 +118,24 @@ app.use(
 
     return {
       schema: caseStudySchema,
+      graphiql: process.env.NODE_ENV !== 'production',
+      context,
+      customFormatErrorFn: (error) => ({
+        message: error.message,
+        locations: error.locations,
+        path: error.path,
+      }),
+    };
+  })
+);
+
+app.use(
+  '/api/careers',
+  graphqlHTTP(async (req, res, params) => {
+    const context = await buildGraphQLContext({ req, res, params });
+
+    return {
+      schema: careerSchema,
       graphiql: process.env.NODE_ENV !== 'production',
       context,
       customFormatErrorFn: (error) => ({

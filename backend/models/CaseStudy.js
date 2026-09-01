@@ -24,6 +24,13 @@ const caseStudySchema = new mongoose.Schema(
       type: String,
       required: [true, 'Content is required'],
     },
+    slug:{
+      type: String,
+      required: [true, 'Slug is required'],
+      unique: true,
+      trim: true,
+      maxlength: [150, 'Slug cannot exceed 150 characters'],
+    }
   },
   { timestamps: true }
 );

@@ -11,6 +11,7 @@ import { Testimonials } from "../pages/testimonials/Testimonials";
 import { News } from "../pages/news/News";
 import { Blogs } from "../pages/blogs/Blogs";
 import { CaseStudies } from "../pages/case-studies/CaseStudies";
+import { Career } from "../pages/careers/Career";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/news" element={<News />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/case-studies" element={<CaseStudies />} />
+        <Route path="/careers" element={<Career />} />
       </Route>
 
       <Route path="/404" element={<Navigate to="/login" replace />} />
