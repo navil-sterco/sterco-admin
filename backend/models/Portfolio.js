@@ -24,6 +24,14 @@ const portfolioSchema = new mongoose.Schema(
       ref: 'User',
       default: null,
     },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
